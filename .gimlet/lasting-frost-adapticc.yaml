@@ -1,7 +1,8 @@
 app: postgres
 env: lasting-frost
 namespace: default
-values: {}
+values:
+  x: "to trick omitempty in go"
 manifests: |
   ---
   apiVersion: source.toolkit.fluxcd.io/v1
