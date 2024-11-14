@@ -12,7 +12,7 @@ manifests: |
   apiVersion: source.toolkit.fluxcd.io/v1
   kind: HelmRepository
   metadata:
-    name: postgres-bitnami
+    name: postgres
     namespace: default
   spec:
     interval: 360m
@@ -32,7 +32,7 @@ manifests: |
         version: 15.5.31
         sourceRef:
           kind: HelmRepository
-          name: postgres-test
+          name: postgres
         interval: 10m
     values:
       commonAnnotations:
