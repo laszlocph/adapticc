@@ -1,0 +1,24 @@
+app: adapticc
+env: lasting-frost
+namespace: default
+chart:
+  repository: https://chart.onechart.dev
+  name: onechart
+  version: 0.70.0
+values:
+  gitRepository: laszlocph/adapticc
+  gitSha: '{{ .SHA }}'
+  image:
+    registry: public
+    strategy: static
+    tag: "1.27"
+  ingress:
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+      kubernetes.io/ingress.class: nginx
+    host: laszlocph-adapticc-eyujopnt.gimlet.app
+    tlsEnabled: true
+  resources:
+    ignoreLimits: true
+  sealedSecrets:
+    postgres-password: AgBTPyf/3A9N3l///Z96TQaa3zs5jF2t76fBiT2vq1Ztt4BFUATSO63u2EixM4FM67hVtnvOSwvI+Q2yfoVlP+as7gAbDMpMEvrhqEJPr+x8lrAgXXhqmLCSEX25+lTYyZxTUrfKEK5s+SKahuGTgMVYPY+YfXLcRifTrWT+GMzGwyaiO1yKTsWhzS2e9kKAksVOfMa4cNpuuJJ20r/Suav351xIkpuEvb8kHuat3wYPwcZYHxhgCfoIyISXFJDqksQrek2jffs/uIy/PLTnhq9/aVFx0Xj66xexc4K9ztSVPTG/Y/KUhjHT635UN4RCb0UnbYFbL6fXIeuTh5UAW3oaO9HNRN6ONCXDzeiCH+etM69Em4NIO3PDh615uQTXy9Kqsnk26wG63HGGYDDtYorl4KuaqHQ6mXZwTm5WJv6rzafs8RWnPaBcJjbja7liqGjPYjBT0WzRSRb6ndFdM5Rm1rHAO5ZCdvxB/jXREIOX48HwDk5ifNpO4HRBoSZNtVnE/jGcSYDfhNwUrcD+VbeeCougFkpkReQwlVLgxhO5J9oz1lgVc7gg7gYul+rdarE9kTlH3IU8f8S064SZoIjInb1eZkmhrOZLVVsNbh2QiwBlgWeCN2AvtbMoxTMlxeGsxM0YPv5t4dsFLOhjOgNAkbH3G6mZP4gWZ+X660jHY1i03pFgmFPLP9pyjfnE5Omqi0dUlU71v+ntXUMQ/1E+cEIX
