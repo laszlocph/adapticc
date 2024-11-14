@@ -78,7 +78,7 @@ manifests: |
     name: pgadmin
     namespace: default
   spec:
-    interval: 60m
+    interval: 360m
     releaseName: pgadmin
     chart:
       spec:
