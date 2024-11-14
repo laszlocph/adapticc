@@ -10,7 +10,7 @@ manifests: |
     name: postgres-bitnami
     namespace: default
   spec:
-    interval: 60m
+    interval: 360m
     url: https://charts.bitnami.com/bitnami
   ---
   apiVersion: helm.toolkit.fluxcd.io/v2
