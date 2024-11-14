@@ -94,6 +94,6 @@ manifests: |
         pgadminPasswordKey: pgadmin-password
       service:
         annotations:
-          gimlet.io/git-repository: laszlocph/streamlit-app
+          gimlet.io/git-repository: laszlocph/adapticc
           gimlet.io/git-sha: '{{ .SHA }}'
       
