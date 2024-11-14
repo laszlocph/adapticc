@@ -1,6 +1,10 @@
 app: postgres
 env: lasting-frost
 namespace: default
+chart:
+  repository: https://chart.onechart.dev
+  name: onechart
+  version: 0.70.0
 values:
   x: "to trick omitempty in go"
 manifests: |
@@ -97,4 +101,26 @@ manifests: |
         annotations:
           gimlet.io/git-repository: laszlocph/adapticc
           gimlet.io/git-sha: '{{ .SHA }}'
-      
+  ---
+  apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  metadata:
+    name: pgadmin
+    namespace: default
+  spec:
+    tls:
+      - hosts:
+          - "pgadmin-eyujopnt.gimlet.app"
+        secretName: tls-pgadmin
+    rules:
+      - host: "pgadmin-eyujopnt.gimlet.app"
+        http:
+          paths:
+            - path: "/"
+              pathType: "Prefix"
+              backend:
+                service:
+                  name: pgadmin-pgadmin4
+                  port:
+                    number: 80
+
