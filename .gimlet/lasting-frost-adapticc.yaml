@@ -92,7 +92,7 @@ manifests: |
         sourceRef:
           kind: HelmRepository
           name: runix
-        interval: 10m
+        interval: 60m
     values:
       existingSecret: credentials
       secretKeys:
