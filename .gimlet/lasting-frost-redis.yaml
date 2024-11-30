@@ -1,24 +1,73 @@
 app: redis
 env: lasting-frost
 namespace: default
-chart:
-  repository: https://chart.onechart.dev
-  name: onechart
-  version: 0.70.0
-values:
-  gitRepository: laszlocph/adapticc
-  gitSha: '{{ .SHA }}'
-  image:
-    registry: public
-    strategy: static
-    tag: "1.27"
-  ingress:
+manifests: |
+  ---
+  apiVersion: source.toolkit.fluxcd.io/v1
+  kind: HelmRepository
+  metadata:
+    name: redis-bitnami
+    namespace: default
+  spec:
+    interval: 60m
+    url: https://charts.bitnami.com/bitnami
+  ---
+  apiVersion: helm.toolkit.fluxcd.io/v2
+  kind: HelmRelease
+  metadata:
+    name: redis
+    namespace: default
+  spec:
+    interval: 60m
+    releaseName: redis
+    chart:
+      spec:
+        chart: redis
+        version: 20.1.3
+        sourceRef:
+          kind: HelmRepository
+          name: redis-bitnami
+        interval: 10m
+    values:
+      architecture: standalone
+      #Uncomment the next 3 lines if you want your Redis to be highly available
+      #architecture: replication
+      #replica:
+      #  replicaCount: 1
+      auth:
+        existingSecret: redis
+      commonConfiguration: |-
+        # Enable AOF https://redis.io/topics/persistence#append-only-file
+        appendonly yes
+        # Disable RDB persistence, AOF persistence already enabled.
+        save ""
+        # https://redis.io/docs/latest/operate/oss_and_stack/management/config/#configuring-redis-as-a-cache
+        maxmemory 100mb
+      master:
+        persistence:
+          enabled: false
+          #Uncomment the following two lines to enable persistence 
+          #enabled: true
+          #size: 1Gi
+        resources:
+          limits:
+            memory: 128Mi
+            cpu: 250m
+          requests:
+            memory: 128Mi
+            cpu: 10m
+  ---
+  apiVersion: bitnami.com/v1alpha1
+  kind: SealedSecret
+  metadata:
+    name: redis
+    namespace: default
     annotations:
-      cert-manager.io/cluster-issuer: letsencrypt
-      kubernetes.io/ingress.class: nginx
-    host: laszlocph-adapticc-eyujopnt.gimlet.app
-    tlsEnabled: true
-  resources:
-    ignoreLimits: true
-  sealedSecrets:
-    redis-password: AgCttArhOeNDyYlF7nGec86SVOts8Wp6COlNNfNQY4A2Kp0HEQKM85Pw4ZXyDqT/R1d7aP33DS+MuobxPWGFd0ONPosUH33T04D0uOY4H0mFGxNc5CefKdoYwhFoehYCvZB55dvj67mKdI34CbnCVW7958HOMxrOig2pVS2/35rvCvdfa+WoeZqPAdgh4sGi7UwMC6aCxqJqxASwiPIQ5f95s8nEr1XgEpa6E7wrLdjdcHILAnPsJYeEhKut770+SuEnbQUkE17zwlGbRA71b3W6Kcf4uMa2h+vMOBtPrnYk09xpQA0ybUHtu7obIGCv0sCPa+w0DmjKNuNsCOFh878OMER0zv/1MaxDkcPf3EVqFjIWzja9L5+5SL0WwOu0ZPI3upMw6I+5tTsnFXw8GCwgkkW/SyGr7xjAi7MAiEjCHIXIDlivS2iIzqeR/YX3E5amsMleUywFCrtkbf+RHP/Fz6NpV5NP7krW1h3ZEIQxWIxI9a1fojbu7sdmD7GCAmTTW31hY0GtkFba5SH0PNdmOPbdF7VfZQMMvQ2yxFL/uZKtgWF86DTsSc/d595ij6g7lNSpN8jkJcHkNG2SjFgun3yfVlAeq1k2sZfFjIYNI+pvrKGbZNytzneTdyM4N4+Z28BOErhkgGdI3yPXQ2rN+l5YBRo931QFT6+OTl+rlfPP0C1OcCqnXoyeZ43O8Iqcim7Dl/8zA5BIQq3A+qhYbHMaWBVg9VtYEQT9bt0b04oSIQuM9q1+
+      sealedsecrets.bitnami.com/cluster-wide: "true"
+  spec:
+    encryptedData:
+      redis-password: AgCttArhOeNDyYlF7nGec86SVOts8Wp6COlNNfNQY4A2Kp0HEQKM85Pw4ZXyDqT/R1d7aP33DSMuobxPWGFd0ONPosUH33T04D0uOY4H0mFGxNc5CefKdoYwhFoehYCvZB55dvj67mKdI34CbnCVW7958HOMxrOig2pVS2/35rvCvdfaWoeZqPAdgh4sGi7UwMC6aCxqJqxASwiPIQ5f95s8nEr1XgEpa6E7wrLdjdcHILAnPsJYeEhKut770SuEnbQUkE17zwlGbRA71b3W6Kcf4uMa2hvMOBtPrnYk09xpQA0ybUHtu7obIGCv0sCPaw0DmjKNuNsCOFh878OMER0zv/1MaxDkcPf3EVqFjIWzja9L55SL0WwOu0ZPI3upMw6I5tTsnFXw8GCwgkkW/SyGr7xjAi7MAiEjCHIXIDlivS2iIzqeR/YX3E5amsMleUywFCrtkbfRHP/Fz6NpV5NP7krW1h3ZEIQxWIxI9a1fojbu7sdmD7GCAmTTW31hY0GtkFba5SH0PNdmOPbdF7VfZQMMvQ2yxFL/uZKtgWF86DTsSc/d595ij6g7lNSpN8jkJcHkNG2SjFgun3yfVlAeq1k2sZfFjIYNIpvrKGbZNytzneTdyM4N4Z28BOErhkgGdI3yPXQ2rNl5YBRo931QFT6OTlrlfPP0C1OcCqnXoyeZ43O8Iqcim7Dl/8zA5BIQq3AqhYbHMaWBVg9VtYEQT9bt0b04oSIQuM9q1
+    template:
+      metadata:
+        name: redis
+        namespace: default
