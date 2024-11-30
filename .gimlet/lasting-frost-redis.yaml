@@ -32,6 +32,7 @@ manifests: |
       commonAnnotations:
         gimlet.io/git-repository: laszlocph/adapticc
         gimlet.io/git-sha: '{{ .SHA }}'
+        gimlet.io/app: redis
       architecture: standalone
       #Uncomment the next 3 lines if you want your Redis to be highly available
       #architecture: replication
