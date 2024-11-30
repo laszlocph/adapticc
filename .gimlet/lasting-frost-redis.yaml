@@ -29,6 +29,9 @@ manifests: |
           name: redis-bitnami
         interval: 10m
     values:
+      commonAnnotations:
+        gimlet.io/git-repository: laszlocph/streamlit-app
+        gimlet.io/git-sha: '{{ .SHA }}'
       architecture: standalone
       #Uncomment the next 3 lines if you want your Redis to be highly available
       #architecture: replication
